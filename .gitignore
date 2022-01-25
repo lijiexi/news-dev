@@ -6,3 +6,13 @@
 *.iml
 out
 gen
+*.class
+*.log
+*.jar
+*.war
+/news-dev-common/target/
+/news-dev-model/target/
+/news-dev-service-api/target/
+/news-dev-service-user/target/
+
+
