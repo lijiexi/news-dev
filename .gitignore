@@ -17,3 +17,4 @@ gen
 /news-dev-service-user/target/
 /mybatis-generator-database/
 /target/
+*.yml
