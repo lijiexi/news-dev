@@ -11,22 +11,17 @@
 
     <artifactId>news-dev-service-user</artifactId>
 
-    <!--
-        引入springboot依赖
-    -->
+
     <dependencies>
+        <!--
+        服务依赖于api工程
+        -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
+            <groupId>com.ljx</groupId>
+            <artifactId>news-dev-service-api</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-        </dependency>
+
     </dependencies>
     <properties>
         <maven.compiler.source>8</maven.compiler.source>

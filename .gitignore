@@ -10,9 +10,9 @@ gen
 *.log
 *.jar
 *.war
+.DS_Store
 /news-dev-common/target/
 /news-dev-model/target/
 /news-dev-service-api/target/
 /news-dev-service-user/target/
-
-
+/mybatis-generator-database/
