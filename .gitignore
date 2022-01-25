@@ -16,3 +16,4 @@ gen
 /news-dev-service-api/target/
 /news-dev-service-user/target/
 /mybatis-generator-database/
+target
