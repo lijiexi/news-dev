@@ -18,3 +18,5 @@
 out
 gen
 !/compiler.xml
+!/runConfigurations.xml
+
