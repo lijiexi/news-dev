@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel>
+      <module name="news-dev" target="1.8" />
+      <module name="news-dev-common" target="1.8" />
+      <module name="news-dev-model" target="1.8" />
+      <module name="news-dev-service-api" target="1.8" />
+      <module name="news-dev-service-user" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

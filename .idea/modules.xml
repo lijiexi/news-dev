@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/news-dev.iml" filepath="$PROJECT_DIR$/news-dev.iml" />
+      <module fileurl="file://$PROJECT_DIR$/news-dev-common/news-dev-common.iml" filepath="$PROJECT_DIR$/news-dev-common/news-dev-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/news-dev-model/news-dev-model.iml" filepath="$PROJECT_DIR$/news-dev-model/news-dev-model.iml" />
+      <module fileurl="file://$PROJECT_DIR$/news-dev-service-api/news-dev-service-api.iml" filepath="$PROJECT_DIR$/news-dev-service-api/news-dev-service-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/news-dev-service-user/news-dev-service-user.iml" filepath="$PROJECT_DIR$/news-dev-service-user/news-dev-service-user.iml" />
+    </modules>
+  </component>
+</project>
