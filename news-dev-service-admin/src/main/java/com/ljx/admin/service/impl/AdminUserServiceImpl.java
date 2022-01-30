@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.ljx.admin.mapper.AdminUserMapper;
 import com.ljx.admin.service.AdminUserService;
+import com.ljx.api.service.BaseService;
 import com.ljx.exception.GraceException;
 import com.ljx.grace.result.ResponseStatusEnum;
 import com.ljx.pojo.AdminUser;
@@ -21,7 +22,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class AdminUserServiceImpl implements AdminUserService {
+public class AdminUserServiceImpl extends BaseService implements AdminUserService {
 
     @Autowired
     public AdminUserMapper adminUserMapper;
@@ -71,16 +72,16 @@ public class AdminUserServiceImpl implements AdminUserService {
         //System.out.println(adminUserList);
         return setterPagedGrid(adminUserList,page);
     }
-    private PagedGridResult setterPagedGrid(List<?> adminUserList,
-                                            Integer page) {
-        PageInfo<?> pageList = new PageInfo<>(adminUserList);
-        PagedGridResult gridResult = new PagedGridResult();
-        gridResult.setRows(adminUserList);
-        gridResult.setPage(page);
-        //设置总页数
-        gridResult.setRecords(pageList.getPages());
-        //设置总记录数 count(0) 查询内容
-        gridResult.setTotal(pageList.getTotal());
-        return gridResult;
-    }
+//    private PagedGridResult setterPagedGrid(List<?> adminUserList,
+//                                            Integer page) {
+//        PageInfo<?> pageList = new PageInfo<>(adminUserList);
+//        PagedGridResult gridResult = new PagedGridResult();
+//        gridResult.setRows(adminUserList);
+//        gridResult.setPage(page);
+//        //设置总页数
+//        gridResult.setRecords(pageList.getPages());
+//        //设置总记录数 count(0) 查询内容
+//        gridResult.setTotal(pageList.getTotal());
+//        return gridResult;
+//    }
 }

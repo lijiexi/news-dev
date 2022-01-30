@@ -48,7 +48,8 @@ public class InterceptorConfig implements WebMvcConfigurer {
          * 管理员状态验证拦截器
          */
         registry.addInterceptor(adminTokenInterceptor())
-                //.addPathPatterns("/adminMng/getAccountInfo")
+                .addPathPatterns("/categoryMng/getCatList")
+                .addPathPatterns("/categoryMng/saveOrUpdateCategory")
                 .addPathPatterns("/adminMng/adminIsExist")
                 .addPathPatterns("/adminMng/getAdminList")
                 .addPathPatterns("/adminMng/addNewAdmin");
