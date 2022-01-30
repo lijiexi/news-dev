@@ -32,6 +32,8 @@ public class BaseController {
     public static final Integer COOKIE_MONTH = 30*24*60*60;
     public static final Integer COOKIE_DELETE = 0;
     public static final String REDIS_USER_INFO = "redis_user_info";
+    public static final Integer COMMON_START_PAGE = 1;
+    public static final Integer COMMON_PAGESIZE = 10;
     @Value("${website.domain-name}")
     public String DOMAIN_NAME;
 
@@ -51,6 +53,7 @@ public class BaseController {
         return map;
     }
 
+    //设置浏览器cookie信息
     public void setCookie(HttpServletRequest request,
                           HttpServletResponse response,
                           String cookieName,
@@ -73,6 +76,17 @@ public class BaseController {
             cookie.setDomain(DOMAIN_NAME);
             cookie.setPath("/");
             response.addCookie(cookie);
+    }
+    //删除cookie信息
+    public void deleteCookie(HttpServletRequest request,
+                             HttpServletResponse response,
+                             String cookieName) {
+        try {
+            String deleteValue = URLEncoder.encode("","utf-8");
+            setCookieValue(request,response,cookieName,deleteValue,COOKIE_DELETE);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
 
 }

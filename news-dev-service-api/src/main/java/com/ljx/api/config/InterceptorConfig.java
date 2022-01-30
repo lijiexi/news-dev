@@ -1,5 +1,6 @@
 package com.ljx.api.config;
 
+import com.ljx.api.interceptors.AdminTokenInterceptor;
 import com.ljx.api.interceptors.PassportInterceptor;
 import com.ljx.api.interceptors.UserActiveInterceptor;
 import com.ljx.api.interceptors.UserTokenInterceptor;
@@ -24,6 +25,10 @@ public class InterceptorConfig implements WebMvcConfigurer {
         return new UserActiveInterceptor();
     }
 
+    //管理员拦截器
+    @Bean
+    public AdminTokenInterceptor adminTokenInterceptor(){return new AdminTokenInterceptor();}
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(passportInterceptor())
@@ -39,5 +44,13 @@ public class InterceptorConfig implements WebMvcConfigurer {
          */
 //        registry.addInterceptor(userActiveInterceptor())
 //                .addPathPatterns("");
+        /**
+         * 管理员状态验证拦截器
+         */
+        registry.addInterceptor(adminTokenInterceptor())
+                //.addPathPatterns("/adminMng/getAccountInfo")
+                .addPathPatterns("/adminMng/adminIsExist")
+                .addPathPatterns("/adminMng/getAdminList")
+                .addPathPatterns("/adminMng/addNewAdmin");
     }
 }
