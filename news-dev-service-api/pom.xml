@@ -12,7 +12,9 @@
         这是接口工程，依赖model层，集中管理所有controller的接口，管理微服务。
     -->
     <artifactId>news-dev-service-api</artifactId>
-
+    <!--
+    密码加密工具
+    -->
     <dependencies>
         <dependency>
             <groupId>com.ljx</groupId>
@@ -33,6 +35,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+
         </dependency>
         <!-- swagger2 配置 -->
         <dependency>
