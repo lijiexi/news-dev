@@ -2,6 +2,7 @@ package com.ljx.article.service.impl;
 
 import com.ljx.api.service.BaseService;
 import com.ljx.article.mapper.ArticleMapper;
+import com.ljx.article.mapper.ArticleMapperCustom;
 import com.ljx.article.service.ArticleService;
 import com.ljx.enums.ArticleAppointType;
 import com.ljx.enums.ArticleReviewStatus;
@@ -26,6 +27,8 @@ public class ArticleServiceImpl extends BaseService implements ArticleService {
     private ArticleMapper articleMapper;
     @Autowired
     private Sid sid;
+    @Autowired
+    private ArticleMapperCustom articleMapperCustom;
 
     @Transactional
     @Override
@@ -57,5 +60,10 @@ public class ArticleServiceImpl extends BaseService implements ArticleService {
         if (res != 1) {
             GraceException.display(ResponseStatusEnum.ARTICLE_CREATE_ERROR);
         }
+    }
+    @Transactional
+    @Override
+    public void updateAppointTopublish() {
+        articleMapperCustom.updateAppointToPublish();
     }
 }
