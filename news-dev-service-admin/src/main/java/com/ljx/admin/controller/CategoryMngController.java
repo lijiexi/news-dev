@@ -7,6 +7,8 @@ import com.ljx.grace.result.GraceJSONResult;
 import com.ljx.grace.result.ResponseStatusEnum;
 import com.ljx.pojo.Category;
 import com.ljx.pojo.bo.SaveCategoryBO;
+import com.ljx.utils.JsonUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -55,6 +57,8 @@ public class CategoryMngController extends BaseController implements CategoryMng
                 return GraceJSONResult.errorCustom(ResponseStatusEnum.CATEGORY_EXIST_ERROR);
             }
         }
+        //修改、新增分类完成后，删除redis内容
+        redis.del(REDIS_ALL_CATEGORY);
 
         return GraceJSONResult.ok();
     }
@@ -62,6 +66,26 @@ public class CategoryMngController extends BaseController implements CategoryMng
     @Override
     public GraceJSONResult getCatList() {
         List<Category> CatList = categoryService.queryCategoryList();
+        return GraceJSONResult.ok(CatList);
+    }
+
+    @Override
+    public GraceJSONResult getCats() {
+        //TODO把数据放入到redis并进行查询
+        //先从redis查询，为空则查询mysql后，放入redis，再返回
+        String allCatJson = redis.get(REDIS_ALL_CATEGORY);
+        List<Category> CatList = null;
+        if (StringUtils.isBlank(allCatJson)) {
+            //通过数据库查询
+            CatList = categoryService.queryCategoryList();
+            //存入到redis
+            redis.set(REDIS_ALL_CATEGORY,JsonUtils.objectToJson(CatList));
+        } else {
+            //redis存在
+            CatList = JsonUtils.jsonToList(allCatJson,Category.class);
+        }
+
+
         return GraceJSONResult.ok(CatList);
     }
 }

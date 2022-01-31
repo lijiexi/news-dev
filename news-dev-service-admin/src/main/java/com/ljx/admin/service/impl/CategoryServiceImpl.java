@@ -26,7 +26,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class CategoryServiceImpl extends BaseService implements CategoryService {
+public class  CategoryServiceImpl extends BaseService implements CategoryService {
     @Autowired
     private CategoryMapper categoryMapper;
 
@@ -58,6 +58,7 @@ public class CategoryServiceImpl extends BaseService implements CategoryService 
     }
 
     @Override
+    @Transactional
     public void modifyCategory(Category category) {
         int res = categoryMapper.updateByPrimaryKey(category);
         if(res != 1) {

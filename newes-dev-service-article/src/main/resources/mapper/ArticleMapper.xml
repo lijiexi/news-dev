@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ljx.article.mapper.ArticleMapper">
+  <resultMap id="BaseResultMap" type="com.ljx.pojo.Article">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="category_id" jdbcType="INTEGER" property="categoryId" />
+    <result column="article_type" jdbcType="INTEGER" property="articleType" />
+    <result column="article_cover" jdbcType="VARCHAR" property="articleCover" />
+    <result column="is_appoint" jdbcType="INTEGER" property="isAppoint" />
+    <result column="article_status" jdbcType="INTEGER" property="articleStatus" />
+    <result column="publish_user_id" jdbcType="VARCHAR" property="publishUserId" />
+    <result column="publish_time" jdbcType="TIMESTAMP" property="publishTime" />
+    <result column="read_counts" jdbcType="INTEGER" property="readCounts" />
+    <result column="comment_counts" jdbcType="INTEGER" property="commentCounts" />
+    <result column="mongo_file_id" jdbcType="VARCHAR" property="mongoFileId" />
+    <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="content" jdbcType="LONGVARCHAR" property="content" />
+  </resultMap>
+</mapper>

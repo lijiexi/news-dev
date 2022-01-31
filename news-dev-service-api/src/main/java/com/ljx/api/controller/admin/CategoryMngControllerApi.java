@@ -6,6 +6,7 @@ import com.ljx.pojo.bo.SaveCategoryBO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +23,10 @@ public interface CategoryMngControllerApi {
     @ApiOperation(value = "管理员查询分类列表", notes = "管理员查询分类列表", httpMethod = "POST")
     @PostMapping("/getCatList")
     public GraceJSONResult getCatList();
+
+    @ApiOperation(value = "用户查询分类列表", notes = "用户查询分类列表", httpMethod = "GET")
+    @GetMapping("/getCats")
+    public GraceJSONResult getCats();
 
 
 }
