@@ -4,11 +4,14 @@ import com.ljx.api.BaseController;
 import com.ljx.api.controller.article.ArticleControllerApi;
 import com.ljx.article.service.ArticleService;
 import com.ljx.enums.ArticleCoverType;
+import com.ljx.enums.ArticleReviewStatus;
+import com.ljx.enums.YesOrNo;
 import com.ljx.grace.result.GraceJSONResult;
 import com.ljx.grace.result.ResponseStatusEnum;
 import com.ljx.pojo.Category;
 import com.ljx.pojo.bo.NewArticleBO;
 import com.ljx.utils.JsonUtils;
+import com.ljx.utils.PagedGridResult;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +20,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -64,6 +68,70 @@ public class ArticleController extends BaseController implements ArticleControll
         //System.out.println(newArticleBO.toString());
         //Service实现
         articleService.createArticle(newArticleBO,temp);
+        return GraceJSONResult.ok();
+    }
+
+    @Override
+    public GraceJSONResult queryMyList(String userId,
+                                       String keyword,
+                                       Integer status,
+                                       Date startDate,
+                                       Date endDate,
+                                       Integer page,
+                                       Integer pageSize) {
+        if(StringUtils.isBlank(userId)) {
+            return GraceJSONResult.errorCustom(ResponseStatusEnum.ARTICLE_QUERY_PARAMS_ERROR);
+        }
+        if (page == null) {
+            page = COMMON_START_PAGE;
+        }
+        if (pageSize == null) {
+            pageSize = COMMON_PAGESIZE;
+        }
+        //service查询列表
+        PagedGridResult res = articleService.queryMyArticleList(userId,keyword,status,startDate,endDate,page,pageSize);
+        return GraceJSONResult.ok(res);
+    }
+
+    @Override
+    public GraceJSONResult queryAllList(Integer status, Integer page, Integer pageSize) {
+        if (page == null) {
+            page = COMMON_START_PAGE;
+        }
+        if (pageSize == null) {
+            pageSize = COMMON_PAGESIZE;
+        }
+        //service查询列表
+        PagedGridResult res = articleService.queryAllArticleList(status,page,pageSize);
+        return GraceJSONResult.ok(res);
+    }
+
+    @Override
+    public GraceJSONResult doReview(String articleId, Integer passOrNot) {
+        Integer pendingStatus;
+        if (passOrNot == YesOrNo.YES.type) {
+            //审核文章通过
+            pendingStatus = ArticleReviewStatus.SUCCESS.type;
+        } else if (passOrNot == YesOrNo.NO.type) {
+            //审核文章block
+            pendingStatus = ArticleReviewStatus.FAILED.type;
+        } else {
+            return GraceJSONResult.errorCustom(ResponseStatusEnum.ARTICLE_REVIEW_ERROR);
+        }
+        //修改文章状态为审核成功、失败
+        articleService.updateArticleStatus(articleId,pendingStatus);
+        return GraceJSONResult.ok();
+    }
+
+    @Override
+    public GraceJSONResult delete(String userId, String articleId) {
+        articleService.delete(userId,articleId);
+        return GraceJSONResult.ok();
+    }
+
+    @Override
+    public GraceJSONResult withdrawete(String userId, String articleId) {
+        articleService.withdraw(userId,articleId);
         return GraceJSONResult.ok();
     }
 }

@@ -2,7 +2,9 @@ package com.ljx.article.service;
 
 import com.ljx.pojo.Category;
 import com.ljx.pojo.bo.NewArticleBO;
+import com.ljx.utils.PagedGridResult;
 
+import java.util.Date;
 import java.util.List;
 
 public interface ArticleService {
@@ -17,4 +19,35 @@ public interface ArticleService {
      */
     public void updateAppointTopublish();
 
+    /**
+     * 用户中心，用户查询自己对文章列表
+     */
+    public PagedGridResult queryMyArticleList(String userId,
+                                              String keyword,
+                                              Integer status,
+                                              Date startDate,
+                                              Date endDate,
+                                              Integer page,
+                                              Integer pageSize);
+    /**
+     * admin中心，管理员查询所有文章列表
+     */
+    public PagedGridResult queryAllArticleList(Integer status,
+                                               Integer page,
+                                               Integer pageSize);
+
+    /**
+     * 修改文章的状态
+     */
+    public void updateArticleStatus(String articleId, Integer pendingStatus);
+
+    /**
+     * 用户删除文章
+     */
+    public void delete(String userId, String articleId);
+
+    /**
+     * 用户撤回文章
+     */
+    public void withdraw(String userId, String articleId);
 }
