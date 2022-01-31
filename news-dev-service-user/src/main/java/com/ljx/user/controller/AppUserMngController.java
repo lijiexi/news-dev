@@ -3,8 +3,11 @@ package com.ljx.user.controller;
 import com.ljx.api.BaseController;
 import com.ljx.api.controller.user.AppUserMngControllerApi;
 import com.ljx.api.controller.user.HelloControllerApi;
+import com.ljx.enums.UserStatus;
 import com.ljx.grace.result.GraceJSONResult;
+import com.ljx.grace.result.ResponseStatusEnum;
 import com.ljx.user.service.AppUserMngService;
+import com.ljx.user.service.UserService;
 import com.ljx.utils.PagedGridResult;
 import com.ljx.utils.RedisOperator;
 import org.slf4j.Logger;
@@ -24,6 +27,8 @@ public class AppUserMngController extends BaseController implements AppUserMngCo
     final static Logger logger = LoggerFactory.getLogger(AppUserMngController.class);
     @Autowired
     private AppUserMngService appUserMngService;
+    @Autowired
+    private UserService userService;
     @Override
     public GraceJSONResult queryAll(String nickname,
                                     Integer status,
@@ -40,5 +45,24 @@ public class AppUserMngController extends BaseController implements AppUserMngCo
         }
         PagedGridResult res = appUserMngService.queryAllUserList(nickname,status,startDate,endDate,page,pageSize);
         return GraceJSONResult.ok(res);
+    }
+
+    @Override
+    public GraceJSONResult userDetail(String userId) {
+
+        return GraceJSONResult.ok(userService.getUser(userId));
+    }
+
+    @Override
+    public GraceJSONResult freezeUserOrNot(String userId, Integer doStatus) {
+        if (!UserStatus.isUserStatusValid(doStatus)) {
+            return GraceJSONResult.errorCustom(ResponseStatusEnum.USER_STATUS_ERROR);
+        }
+        appUserMngService.freezeUserOrNot(userId,doStatus);
+        //刷新用户状态
+        //1.删除用户会话，使用户重新登录
+        //2.查询最新用户信息，重新放入redis中，进行更新
+        redis.del(REDIS_USER_INFO+":"+userId);
+        return GraceJSONResult.ok();
     }
 }

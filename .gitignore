@@ -15,6 +15,8 @@ gen
 /news-dev-model/target/
 /news-dev-service-api/target/
 /news-dev-service-user/target/
+/newes-dev-service-article/target/
 /mybatis-generator-database/
+/news-dev-service-admin/target/
 /target/
 *.yml

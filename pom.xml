@@ -13,6 +13,7 @@
         <module>news-dev-service-api</module>
         <module>news-dev-service-user</module>
         <module>news-dev-service-admin</module>
+        <module>newes-dev-service-article</module>
     </modules>
 
     <packaging>pom</packaging>

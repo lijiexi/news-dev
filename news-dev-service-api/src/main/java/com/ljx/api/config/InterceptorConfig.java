@@ -20,6 +20,12 @@ public class InterceptorConfig implements WebMvcConfigurer {
     public UserTokenInterceptor userTokenInterceptor(){
         return new UserTokenInterceptor();
     }
+
+    /**
+     * 用户状态拦截器，拦截为激活、被封禁的用户
+     * 用户被封禁后，会从redis删除状态信息
+     * 此时查询不到状态信息则进行拦截
+     */
     @Bean
     public UserActiveInterceptor userActiveInterceptor(){
         return new UserActiveInterceptor();

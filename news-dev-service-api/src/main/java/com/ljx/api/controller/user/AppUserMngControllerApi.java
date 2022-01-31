@@ -21,4 +21,14 @@ public interface AppUserMngControllerApi {
                                     @RequestParam Date endDate,
                                     @RequestParam Integer page,
                                     @RequestParam Integer pageSize);
+
+    @ApiOperation(value = "查看用户详情", notes = "查看用户详情", httpMethod = "POST")
+    @PostMapping("userDetail")
+    public GraceJSONResult userDetail(@RequestParam String userId);
+
+    @ApiOperation(value = "用户冻结、解冻", notes = "用户冻结、解冻", httpMethod = "POST")
+    @PostMapping("freezeUserOrNot")
+    public GraceJSONResult freezeUserOrNot(@RequestParam String userId,
+                                           @RequestParam Integer doStatus);
 }
+

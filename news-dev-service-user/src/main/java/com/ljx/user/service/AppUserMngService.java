@@ -15,5 +15,9 @@ public interface AppUserMngService {
                                             Date endDate,
                                             Integer page,
                                             Integer pageSize);
+    /**
+     *解冻或者冻结用户
+     */
+    public void freezeUserOrNot(String userId, Integer doStatus);
 
 }

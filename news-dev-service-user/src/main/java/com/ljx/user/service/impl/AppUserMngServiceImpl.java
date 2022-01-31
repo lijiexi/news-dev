@@ -17,6 +17,7 @@ import org.n3r.idworker.Sid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import java.util.Date;
@@ -54,5 +55,15 @@ public class AppUserMngServiceImpl extends BaseService implements AppUserMngServ
         PageHelper.startPage(page,pageSize);
         List<AppUser> list = appUserMapper.selectByExample(example);
         return setterPagedGrid(list,page);
+    }
+
+    @Transactional
+    @Override
+    public void freezeUserOrNot(String userId, Integer doStatus) {
+        AppUser user = new AppUser();
+        user.setId(userId);
+        user.setActiveStatus(doStatus);
+        appUserMapper.updateByPrimaryKeySelective(user);
+
     }
 }

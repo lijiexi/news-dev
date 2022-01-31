@@ -33,7 +33,7 @@ public class UserActiveInterceptor extends BaseInterceptor implements HandlerInt
         if(StringUtils.isNotBlank(userJson)) {
             user = JsonUtils.jsonToPojo(userJson,AppUser.class);
         }else{
-            //redis没有信息，则表明用户未登录
+            //redis没有信息，则表明用户未登录或者被封禁后删除信息
             GraceException.display(ResponseStatusEnum.UN_LOGIN);
             return false;
         }
