@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -87,5 +89,38 @@ public class UserController extends BaseController implements UserControllerApi 
         BeanUtils.copyProperties(user,userVO);
 
         return GraceJSONResult.ok(userVO);
+    }
+
+    //远程调用
+    @Override
+    public GraceJSONResult queryByIds(String userIds) {
+        if (StringUtils.isBlank(userIds)) {
+            //为空
+            return GraceJSONResult.errorCustom(ResponseStatusEnum.USER_NOT_EXIST_ERROR);
+        }
+        List<AppUserVO> publishList = new ArrayList<>();
+        //将String转换成用户id的list
+        List<String> userIdList = JsonUtils.jsonToList(userIds,String.class);
+        for (String userId : userIdList) {
+            //获得基本信息
+            AppUserVO appUserVO = getBasicUserInfo(userId);
+            publishList.add(appUserVO);
+        }
+
+        return GraceJSONResult.ok(publishList);
+    }
+
+    /**
+     *
+     * @param userId 根据id在redis、数据库中查user信息
+     * @return 返回UserVo
+     */
+    private AppUserVO getBasicUserInfo (String userId) {
+        //1.根据userId查询用户信息
+        AppUser user = getUser(userId);
+        //2.返回用户信息
+        AppUserVO userVO = new AppUserVO();
+        BeanUtils.copyProperties(user,userVO);
+        return userVO;
     }
 }

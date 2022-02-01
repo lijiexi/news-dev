@@ -16,7 +16,6 @@ import com.ljx.pojo.bo.NewArticleBO;
 import com.ljx.utils.PagedGridResult;
 import org.apache.commons.lang3.StringUtils;
 import org.n3r.idworker.Sid;
-import org.n3r.idworker.utils.Utils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -28,4 +28,10 @@ public interface UserControllerApi {
     @ApiOperation(value = "获得用户基本信息", notes = "获得用户基本信息", httpMethod = "POST")
     @PostMapping("/getUserInfo")
     public GraceJSONResult getUserInfo(@RequestParam String userId);
+
+
+
+    @ApiOperation(value = "根据用户id查询用户列表", notes = "resttemplate远程调用", httpMethod = "GET")
+    @GetMapping("/queryByIds")
+    public GraceJSONResult queryByIds(@RequestParam String userIds);
 }
