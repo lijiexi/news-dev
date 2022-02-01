@@ -1,10 +1,12 @@
 package com.ljx.article.service;
 
+import com.ljx.pojo.Article;
 import com.ljx.pojo.Category;
 import com.ljx.pojo.bo.NewArticleBO;
 import com.ljx.utils.PagedGridResult;
 
 import java.util.Date;
+import java.util.List;
 
 public interface ArticlePortalService {
 
@@ -15,6 +17,19 @@ public interface ArticlePortalService {
                                                  Integer category,
                                                  Integer page,
                                                  Integer pageSize);
+    /**
+     * 首页查热文列表
+     */
+    public List<Article> queryHotList();
+    /**
+     * 查询某人热文列表
+     */
+    public PagedGridResult queryGoodArticleListOfWriter(String writerId);
 
-
+    /**
+     * 查询作家所有文章列表
+     */
+    public PagedGridResult queryIndexqueryArticleListOfWriterArticleList(String writerId,
+                                                                         Integer page,
+                                                                         Integer pageSize);
 }

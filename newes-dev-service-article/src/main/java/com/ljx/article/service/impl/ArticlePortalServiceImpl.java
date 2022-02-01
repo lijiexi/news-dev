@@ -60,7 +60,56 @@ public class ArticlePortalServiceImpl extends BaseService implements ArticlePort
             criteria.andEqualTo("categoryId",category);
         }
         PageHelper.startPage(page,pageSize);
-        List<Article>  list = articleMapper.selectByExample(articleExample);
+        List<Article> list = articleMapper.selectByExample(articleExample);
         return setterPagedGrid(list,page);
+    }
+
+    @Override
+    public PagedGridResult queryIndexqueryArticleListOfWriterArticleList(String writerId,
+                                                                         Integer page,
+                                                                         Integer pageSize) {
+        Example articleExample = new Example(Article.class);
+        Example.Criteria criteria = setDefaultArticleExample(articleExample);
+        criteria.andEqualTo("publishUserId",writerId);
+        PageHelper.startPage(page,pageSize);
+        List<Article> list = articleMapper.selectByExample(articleExample);
+        return setterPagedGrid(list,page);
+    }
+
+    @Override
+    public List<Article> queryHotList() {
+        Example articleExample = new Example(Article.class);
+        Example.Criteria criteria = setDefaultArticleExample(articleExample);
+        //分页，只查5条数据
+        PageHelper.startPage(1,5);
+        List<Article> list = articleMapper.selectByExample(articleExample);
+        return list;
+    }
+
+    @Override
+    public PagedGridResult queryGoodArticleListOfWriter(String writerId) {
+        Example articleExample = new Example(Article.class);
+        Example.Criteria criteria = setDefaultArticleExample(articleExample);
+        criteria.andEqualTo("publishUserId",writerId);
+        //分页，只查5条数据
+        PageHelper.startPage(1,5);
+        List<Article> list = articleMapper.selectByExample(articleExample);
+        return setterPagedGrid(list,1);
+    }
+
+    private Example.Criteria setDefaultArticleExample(Example articleExample) {
+        articleExample.orderBy("publishTime").desc();
+        Example.Criteria criteria = articleExample.createCriteria();
+        /**
+         * 查询首页文章条件
+         * 1.即时发布文章或者定时任务到点发布
+         * 2.isDelete=未删除 逻辑未删除
+         * 3.articleStatus==3 审核通过的文章
+         */
+
+        criteria.andEqualTo("isAppoint",YesOrNo.NO.type);
+        criteria.andEqualTo("isDelete", YesOrNo.NO.type);
+        criteria.andEqualTo("articleStatus", ArticleReviewStatus.SUCCESS.type);
+        return criteria;
     }
 }

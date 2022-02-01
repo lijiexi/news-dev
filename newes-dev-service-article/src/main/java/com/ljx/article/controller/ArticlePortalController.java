@@ -92,6 +92,7 @@ public class ArticlePortalController extends BaseController implements ArticlePo
         res.setRows(indexArticleVOS);
         return GraceJSONResult.ok(res);
     }
+
     private AppUserVO getUserInfo(String publisherId,
                                   List<AppUserVO> publishList) {
         for (AppUserVO user : publishList) {
@@ -100,5 +101,34 @@ public class ArticlePortalController extends BaseController implements ArticlePo
             }
         }
         return null;
+    }
+
+    @Override
+    public GraceJSONResult hotList() {
+        List<Article> list = articlePortalService.queryHotList();
+        return GraceJSONResult.ok(list);
+    }
+
+    @Override
+    public GraceJSONResult queryArticleListOfWriter(String writerId,
+                                                    Integer page,
+                                                    Integer pageSize) {
+        if (page == null) {
+            page = COMMON_START_PAGE;
+        }
+        if (pageSize == null) {
+            pageSize = COMMON_PAGESIZE;
+        }
+        //service查询列表
+        PagedGridResult res
+                = articlePortalService.queryIndexqueryArticleListOfWriterArticleList(writerId,page,pageSize);
+        return GraceJSONResult.ok(res);
+    }
+
+    @Override
+    public GraceJSONResult queryGoodArticleListOfWriter(String writerId) {
+        PagedGridResult res
+                = articlePortalService.queryGoodArticleListOfWriter(writerId);
+        return GraceJSONResult.ok(res);
     }
 }
