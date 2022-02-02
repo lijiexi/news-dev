@@ -23,6 +23,30 @@ public class AppUserVO {
      */
     private Integer activeStatus;
 
+    public Integer getMyFollowCounts() {
+        return myFollowCounts;
+    }
+
+    public void setMyFollowCounts(Integer myFollowCounts) {
+        this.myFollowCounts = myFollowCounts;
+    }
+
+    public Integer getMyFansCounts() {
+        return myFansCounts;
+    }
+
+    public void setMyFansCounts(Integer myFansCounts) {
+        this.myFansCounts = myFansCounts;
+    }
+
+    /**
+     * 关注数
+     */
+    private Integer myFollowCounts;
+    /**
+     * 粉丝数
+     */
+    private Integer myFansCounts;
     public String getId() {
         return id;
     }

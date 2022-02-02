@@ -3,6 +3,7 @@ package com.ljx.api;
 
 import com.ljx.utils.RedisOperator;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.BindingResult;
@@ -35,6 +36,10 @@ public class BaseController {
     public static final String REDIS_USER_INFO = "redis_user_info";
     public static final Integer COMMON_START_PAGE = 1;
     public static final Integer COMMON_PAGESIZE = 10;
+
+    public static final String REDIS_WRITER_FANS_COUNTS = "redis_writer_fans_counts";
+    public static final String REDIS_MY_FOLLOW_COUNTS = "redis_my_follow_counts";
+
     @Value("${website.domain-name}")
     public String DOMAIN_NAME;
 
@@ -88,6 +93,13 @@ public class BaseController {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+    }
+    public Integer getCountsFromRedis(String key) {
+        String countsStr = redis.get(key);
+        if (StringUtils.isBlank(countsStr)) {
+            countsStr = "0";
+        }
+        return  Integer.valueOf(countsStr);
     }
 
 }

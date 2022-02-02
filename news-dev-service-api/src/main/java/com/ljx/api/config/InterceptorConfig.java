@@ -37,6 +37,9 @@ public class InterceptorConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+        /**
+         * 防止相同ip频繁获取验证码
+         */
         registry.addInterceptor(passportInterceptor())
                 .addPathPatterns("/passport/getSMSCode");
         /**
@@ -44,12 +47,16 @@ public class InterceptorConfig implements WebMvcConfigurer {
          */
         registry.addInterceptor(userTokenInterceptor())
                 .addPathPatterns("/user/getAccountInfo")
-                .addPathPatterns("/user/updateUserInfo");
+                .addPathPatterns("/user/updateUserInfo")
+                .addPathPatterns("/fans/follow")
+                .addPathPatterns("/fans/unfollow");
+
         /**
          * 注册激活验证拦截器
          */
-//        registry.addInterceptor(userActiveInterceptor())
-//                .addPathPatterns("");
+        registry.addInterceptor(userActiveInterceptor())
+                .addPathPatterns("/fans/follow")
+                .addPathPatterns("/fans/unfollow");
         /**
          * 管理员状态验证拦截器
          */

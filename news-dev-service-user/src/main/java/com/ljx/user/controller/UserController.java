@@ -87,6 +87,9 @@ public class UserController extends BaseController implements UserControllerApi 
         //3.返回用户信息
         AppUserVO userVO = new AppUserVO();
         BeanUtils.copyProperties(user,userVO);
+        //4.查询Redis中用户关注数和粉丝数到，放入VO中，传给前端
+        userVO.setMyFansCounts(getCountsFromRedis(REDIS_WRITER_FANS_COUNTS+":"+userId));
+        userVO.setMyFollowCounts(getCountsFromRedis(REDIS_MY_FOLLOW_COUNTS+":"+userId));
 
         return GraceJSONResult.ok(userVO);
     }
@@ -123,4 +126,5 @@ public class UserController extends BaseController implements UserControllerApi 
         BeanUtils.copyProperties(user,userVO);
         return userVO;
     }
+
 }
