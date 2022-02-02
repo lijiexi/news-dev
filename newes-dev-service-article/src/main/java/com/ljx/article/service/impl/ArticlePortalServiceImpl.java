@@ -14,6 +14,7 @@ import com.ljx.grace.result.ResponseStatusEnum;
 import com.ljx.pojo.Article;
 import com.ljx.pojo.Category;
 import com.ljx.pojo.bo.NewArticleBO;
+import com.ljx.pojo.vo.ArticleDetailVO;
 import com.ljx.utils.PagedGridResult;
 import org.apache.commons.lang3.StringUtils;
 import org.n3r.idworker.Sid;
@@ -111,5 +112,20 @@ public class ArticlePortalServiceImpl extends BaseService implements ArticlePort
         criteria.andEqualTo("isDelete", YesOrNo.NO.type);
         criteria.andEqualTo("articleStatus", ArticleReviewStatus.SUCCESS.type);
         return criteria;
+    }
+
+    @Override
+    public ArticleDetailVO queryDetail(String articleId) {
+        Article article = new Article();
+        article.setId(articleId);
+        article.setIsAppoint(YesOrNo.NO.type);
+        article.setIsDelete(YesOrNo.NO.type);
+        article.setArticleStatus(ArticleReviewStatus.SUCCESS.type);
+
+        Article res = articleMapper.selectOne(article);
+        ArticleDetailVO articleDetailVO = new ArticleDetailVO();
+        BeanUtils.copyProperties(res,articleDetailVO);
+
+        return articleDetailVO;
     }
 }

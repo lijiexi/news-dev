@@ -6,8 +6,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Api(value = "首页文章业务controller", tags = {"首页文章业务controller"})
 @RequestMapping("portal/article")
@@ -40,5 +43,14 @@ public interface ArticlePortalControllerApi {
     @GetMapping("queryGoodArticleListOfWriter")
     @ApiOperation(value = "作家页面查询近期佳文", notes = "作家页面查询近期佳文", httpMethod = "GET")
     public GraceJSONResult queryGoodArticleListOfWriter(@RequestParam String writerId);
+
+    @GetMapping("detail")
+    @ApiOperation(value = "文章详情查询", notes = "文章详情查询", httpMethod = "GET")
+    public GraceJSONResult detail(@RequestParam String articleId);
+
+    @PostMapping("readArticle")
+    @ApiOperation(value = "文章阅读量累加", notes = "文章阅读量累加", httpMethod = "POST")
+    public GraceJSONResult readArticle(@RequestParam String articleId,
+                                       HttpServletRequest request);
 
 }

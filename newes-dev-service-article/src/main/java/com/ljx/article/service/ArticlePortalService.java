@@ -3,6 +3,7 @@ package com.ljx.article.service;
 import com.ljx.pojo.Article;
 import com.ljx.pojo.Category;
 import com.ljx.pojo.bo.NewArticleBO;
+import com.ljx.pojo.vo.ArticleDetailVO;
 import com.ljx.utils.PagedGridResult;
 
 import java.util.Date;
@@ -32,4 +33,8 @@ public interface ArticlePortalService {
     public PagedGridResult queryIndexqueryArticleListOfWriterArticleList(String writerId,
                                                                          Integer page,
                                                                          Integer pageSize);
+    /**
+     * 查询文章详细内容
+     */
+    public ArticleDetailVO queryDetail(String articleId);
 }

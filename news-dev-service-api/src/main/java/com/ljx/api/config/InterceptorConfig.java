@@ -1,9 +1,6 @@
 package com.ljx.api.config;
 
-import com.ljx.api.interceptors.AdminTokenInterceptor;
-import com.ljx.api.interceptors.PassportInterceptor;
-import com.ljx.api.interceptors.UserActiveInterceptor;
-import com.ljx.api.interceptors.UserTokenInterceptor;
+import com.ljx.api.interceptors.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -34,6 +31,11 @@ public class InterceptorConfig implements WebMvcConfigurer {
     //管理员拦截器
     @Bean
     public AdminTokenInterceptor adminTokenInterceptor(){return new AdminTokenInterceptor();}
+
+    //文章阅读量拦截器
+    @Bean
+    public ArticleReadInterceptor articleReadInterceptor(){return new ArticleReadInterceptor();}
+
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -66,5 +68,10 @@ public class InterceptorConfig implements WebMvcConfigurer {
                 .addPathPatterns("/adminMng/adminIsExist")
                 .addPathPatterns("/adminMng/getAdminList")
                 .addPathPatterns("/adminMng/addNewAdmin");
+        /**
+         * 文章阅读量拦截器
+         */
+        registry.addInterceptor(articleReadInterceptor())
+                .addPathPatterns("/portal/article/readArticle");
     }
 }
