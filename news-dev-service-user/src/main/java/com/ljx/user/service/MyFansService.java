@@ -1,8 +1,11 @@
 package com.ljx.user.service;
 
+import com.ljx.enums.Sex;
+import com.ljx.pojo.vo.RegionRatioVO;
 import com.ljx.utils.PagedGridResult;
 
 import java.util.Date;
+import java.util.List;
 
 public interface MyFansService {
     /**
@@ -18,4 +21,19 @@ public interface MyFansService {
      * 用户取关作家
      */
     public void unfollow(String writerId, String fanId);
+    /**
+     * 查询用户所有粉丝
+     */
+    public PagedGridResult queryMyFansList(String writerId,
+                                           Integer page,
+                                           Integer pageSize);
+    /**
+     * 查询粉丝数
+     */
+    public Integer queryFansCounts(String writerId, Sex sex);
+
+    /**
+     * 根据地域查询粉丝
+     */
+    public List<RegionRatioVO> queryRegionRatioCounts(String writerId);
 }

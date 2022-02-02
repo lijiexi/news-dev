@@ -3,14 +3,20 @@ package com.ljx.user.controller;
 import com.ljx.api.BaseController;
 import com.ljx.api.controller.user.HelloControllerApi;
 import com.ljx.api.controller.user.MyFansControllerApi;
+import com.ljx.enums.Sex;
 import com.ljx.grace.result.GraceJSONResult;
+import com.ljx.pojo.vo.FansCountsVO;
+import com.ljx.pojo.vo.RegionRatioVO;
 import com.ljx.user.service.MyFansService;
+import com.ljx.utils.JsonUtils;
 import com.ljx.utils.RedisOperator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 public class MyFansController extends BaseController implements MyFansControllerApi {
@@ -35,5 +41,35 @@ public class MyFansController extends BaseController implements MyFansController
     public GraceJSONResult unfollow(String writerId, String fanId) {
         myFansService.unfollow(writerId,fanId);
         return GraceJSONResult.ok();
+    }
+
+    @Override
+    public GraceJSONResult queryAll(String writerId,
+                                    Integer page,
+                                    Integer pageSize) {
+        if (page == null) {
+            page = COMMON_START_PAGE;
+        }
+        if (pageSize == null) {
+            pageSize = COMMON_PAGESIZE;
+        }
+
+        return GraceJSONResult.ok(myFansService.queryMyFansList(writerId,page,pageSize));
+    }
+
+    @Override
+    public GraceJSONResult queryRatio(String writerId) {
+        int man = myFansService.queryFansCounts(writerId, Sex.man);
+        int women = myFansService.queryFansCounts(writerId,Sex.woman);
+        FansCountsVO fansCountsVO = new FansCountsVO();
+        fansCountsVO.setManCounts(man);
+        fansCountsVO.setWomanCounts(women);
+        return GraceJSONResult.ok(fansCountsVO);
+    }
+
+    @Override
+    public GraceJSONResult queryRatioByRegion(String writerId) {
+        List<RegionRatioVO> list = myFansService.queryRegionRatioCounts(writerId);
+        return GraceJSONResult.ok(list);
     }
 }
