@@ -1,6 +1,8 @@
 package com.ljx.article.service.impl;
 
+import com.aliyuncs.ecs.model.v20140526.DescribeAccessPointsResponse;
 import com.github.pagehelper.PageHelper;
+import com.ljx.api.config.RabbitMQDelayConfig;
 import com.ljx.api.service.BaseService;
 import com.ljx.article.mapper.ArticleMapper;
 import com.ljx.article.mapper.ArticleMapperCustom;
@@ -13,9 +15,15 @@ import com.ljx.grace.result.ResponseStatusEnum;
 import com.ljx.pojo.Article;
 import com.ljx.pojo.Category;
 import com.ljx.pojo.bo.NewArticleBO;
+import com.ljx.utils.DateUtil;
 import com.ljx.utils.PagedGridResult;
 import org.apache.commons.lang3.StringUtils;
 import org.n3r.idworker.Sid;
+import org.springframework.amqp.AmqpException;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageDeliveryMode;
+import org.springframework.amqp.core.MessagePostProcessor;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +42,8 @@ public class ArticleServiceImpl extends BaseService implements ArticleService {
     private Sid sid;
     @Autowired
     private ArticleMapperCustom articleMapperCustom;
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     @Transactional
     @Override
@@ -65,6 +75,35 @@ public class ArticleServiceImpl extends BaseService implements ArticleService {
         if (res != 1) {
             GraceException.display(ResponseStatusEnum.ARTICLE_CREATE_ERROR);
         }
+        //发送延迟消息到rabbitmq，计算定时发布时间和当前时间的时间差，则为往后延时的时间ms
+        if (article.getIsAppoint() == ArticleAppointType.TIMING.type) {
+            //定时发布时间-当前时间=延迟时间
+            Date futureDate = newArticleBO.getPublishTime();
+            Date nowDate = new Date();
+            int delayTimes = (int)(futureDate.getTime() - nowDate.getTime());
+            //System.out.println(delayTimes);
+
+            MessagePostProcessor messagePostProcessor = new MessagePostProcessor() {
+                @Override
+                public Message postProcessMessage(Message message) throws AmqpException {
+                    // 设置消息的持久
+                    message.getMessageProperties()
+                            .setDeliveryMode(MessageDeliveryMode.PERSISTENT);
+                    // 设置消息延迟的时间，单位ms毫秒
+                    message.getMessageProperties()
+                            .setDelay(delayTimes);
+                    return message;
+                }
+            };
+            //传入当前文章id，作为消息
+            rabbitTemplate.convertAndSend(
+                    RabbitMQDelayConfig.EXCHANGE_DELAY,
+                    "publish.delay.do",
+                    articleId,
+                    messagePostProcessor);
+
+            System.out.println("延迟消息，定时发布文章：" + new Date());
+        }
 
         //TODO使用AI检测文章内容
         //默认AI通过，直接进行人工审核
@@ -91,6 +130,19 @@ public class ArticleServiceImpl extends BaseService implements ArticleService {
     @Override
     public void updateAppointTopublish() {
         articleMapperCustom.updateAppointToPublish();
+    }
+
+    /**
+     * 延迟队列收到消息后，更改mysql对应的一条文章记录，设置其appoint状态为0
+     */
+    @Transactional
+    @Override
+    public void updateArticleTopublish(String articleId) {
+        Article article = new Article();
+        article.setId(articleId);
+        //修改文章为即时发布
+        article.setIsAppoint(ArticleAppointType.IMMEDIATELY.type);
+        articleMapper.updateByPrimaryKeySelective(article);
     }
 
     @Override

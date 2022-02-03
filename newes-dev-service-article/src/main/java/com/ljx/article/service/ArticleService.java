@@ -18,6 +18,11 @@ public interface ArticleService {
      * 更新定时发布为即时发布
      */
     public void updateAppointTopublish();
+    /**
+     * 延迟队列收到消息后，更改mysql对应的一条文章记录，设置其appoint状态为0
+     * 更新单条文章为即时发布
+     */
+    public void updateArticleTopublish(String articleId);
 
     /**
      * 用户中心，用户查询自己对文章列表

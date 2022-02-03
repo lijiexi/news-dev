@@ -1,7 +1,6 @@
 package com.ljx.article.controller;
 
 import com.ljx.api.config.RabbitMQDelayConfig;
-import com.ljx.grace.result.GraceJSONResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.AmqpException;
@@ -24,32 +23,8 @@ public class HelloController  {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
-//    @GetMapping("/delay")
-//    public Object hello(){
-//        //延迟消息对象
-//        MessagePostProcessor messagePostProcessor = new MessagePostProcessor() {
-//            @Override
-//            public Message postProcessMessage(Message message) throws AmqpException {
-//                //设置消息的持久
-//                message.getMessageProperties()
-//                        .setDeliveryMode(MessageDeliveryMode.PERSISTENT);
-//                //设置消息延迟的时间，单位毫秒
-//                message.getMessageProperties().setDelay(5000);
-//                return message;
-//            }
-//        };
-//        rabbitTemplate.convertAndSend(
-//                RabbitMQDelayConfig.EXCHANGE_DELAY,
-//                "delay.demo",
-//                "这是一条延迟消息",
-//                messagePostProcessor);
-//        //往exchange发送信息，mq会根据不同路由，放入到匹配队列里，
-//
-//
-//        return GraceJSONResult.ok();
-//    }
-@GetMapping("/delay")
-public Object delay() {
+    @GetMapping("/delay")
+    public Object delay() {
 
     MessagePostProcessor messagePostProcessor = new MessagePostProcessor() {
         @Override

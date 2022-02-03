@@ -16,10 +16,10 @@ public class TaskPublishArticles {
     @Autowired
     private ArticleService articleService;
     //添加定时任务，和其执行任务表达式
-    @Scheduled(cron = "0/3 * * * * ？*")
+    @Scheduled(cron = "0/7 * * * * ？*")
     private void publishArticles () {
         //System.out.println("----test----"+ LocalDateTime.now());
         //调用自定义文章service，将当前时间该发布的文章类型，改为即时发布
-       // articleService.updateAppointTopublish();
+        //articleService.updateAppointTopublish();
     }
 }
