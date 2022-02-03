@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import java.time.LocalDateTime;
 
 /**
  * 文章发布定时任务
@@ -21,6 +20,6 @@ public class TaskPublishArticles {
     private void publishArticles () {
         //System.out.println("----test----"+ LocalDateTime.now());
         //调用自定义文章service，将当前时间该发布的文章类型，改为即时发布
-        articleService.updateAppointTopublish();
+       // articleService.updateAppointTopublish();
     }
 }
