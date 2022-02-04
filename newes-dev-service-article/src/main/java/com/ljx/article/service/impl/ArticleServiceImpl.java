@@ -1,6 +1,5 @@
 package com.ljx.article.service.impl;
 
-import com.aliyuncs.ecs.model.v20140526.DescribeAccessPointsResponse;
 import com.github.pagehelper.PageHelper;
 import com.ljx.api.config.RabbitMQDelayConfig;
 import com.ljx.api.service.BaseService;
@@ -15,7 +14,7 @@ import com.ljx.grace.result.ResponseStatusEnum;
 import com.ljx.pojo.Article;
 import com.ljx.pojo.Category;
 import com.ljx.pojo.bo.NewArticleBO;
-import com.ljx.utils.DateUtil;
+import com.ljx.pojo.eo.ArticleEO;
 import com.ljx.utils.PagedGridResult;
 import org.apache.commons.lang3.StringUtils;
 import org.n3r.idworker.Sid;
@@ -26,6 +25,9 @@ import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.query.IndexQuery;
+import org.springframework.data.elasticsearch.core.query.IndexQueryBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
@@ -44,6 +46,8 @@ public class ArticleServiceImpl extends BaseService implements ArticleService {
     private ArticleMapperCustom articleMapperCustom;
     @Autowired
     private RabbitTemplate rabbitTemplate;
+    @Autowired
+    private ElasticsearchTemplate elasticsearchTemplate;
 
     @Transactional
     @Override
@@ -115,6 +119,9 @@ public class ArticleServiceImpl extends BaseService implements ArticleService {
         Example example = new Example(Article.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("id",articleId);
+        //验证文章发布时间，如果小于等于当前时间，才能进行操作，确保只能审核立即发布文章
+        if(pendingStatus.equals(3))
+        criteria.andLessThanOrEqualTo("publishTime",new Date());
 
         Article article = new Article();
         //修改状态
@@ -122,6 +129,20 @@ public class ArticleServiceImpl extends BaseService implements ArticleService {
         int res = articleMapper.updateByExampleSelective(article,example);
         if (res != 1) {
             GraceException.display(ResponseStatusEnum.ARTICLE_REVIEW_ERROR);
+        }
+        //如果审核通过，则查询artilce表，将相应字段信息存入es中
+        if (pendingStatus == ArticleReviewStatus.SUCCESS.type) {
+            Article result = articleMapper.selectByPrimaryKey(articleId);
+            //对立即发布文章，审核完毕立即存入es
+            if (result.getIsAppoint() == ArticleAppointType.IMMEDIATELY.type) {
+                ArticleEO articleEO = new ArticleEO();
+                //将article对象属性拷贝到eo中
+                BeanUtils.copyProperties(result,articleEO);
+                IndexQuery iq = new IndexQueryBuilder().withObject(articleEO).build();
+                //创建document
+                elasticsearchTemplate.index(iq);
+            }
+
         }
 
     }
