@@ -18,5 +18,6 @@ gen
 /newes-dev-service-article/target/
 /mybatis-generator-database/
 /news-dev-service-admin/target/
+/news-dev-service-search/target/
 /target/
 *.yml
