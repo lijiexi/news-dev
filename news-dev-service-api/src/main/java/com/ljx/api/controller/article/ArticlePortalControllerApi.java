@@ -17,14 +17,23 @@ import javax.servlet.http.HttpServletRequest;
 public interface ArticlePortalControllerApi {
 
 
-    @ApiOperation(value = "首页查询文章列表", notes = "首页查询文章列表", httpMethod = "GET")
-    @GetMapping("list")
-    public GraceJSONResult list(@RequestParam String keyword,
+    @ApiOperation(value = "首页通过mysql查询文章列表", notes = "首页通过mysql查询文章列表", httpMethod = "GET")
+    @GetMapping("mysqlList")
+    public GraceJSONResult mysqlList(@RequestParam String keyword,
                                 @RequestParam Integer category,
                                 @ApiParam(name = "page",value = "查询下一页的第几页",required = false)
                                     @RequestParam Integer page,
                                 @ApiParam(name = "pageSize",value = "每一页显示条数",required = false)
                                     @RequestParam Integer pageSize);
+
+    @ApiOperation(value = "首页通过ES查询文章列表", notes = "首页通过ES查询文章列表", httpMethod = "GET")
+    @GetMapping("list")
+    public GraceJSONResult eslist(@RequestParam String keyword,
+                                @RequestParam Integer category,
+                                @ApiParam(name = "page",value = "查询下一页的第几页",required = false)
+                                @RequestParam Integer page,
+                                @ApiParam(name = "pageSize",value = "每一页显示条数",required = false)
+                                @RequestParam Integer pageSize);
 
     @ApiOperation(value = "首页查热文列表", notes = "首页查热文列表", httpMethod = "GET")
     @GetMapping("hotList")

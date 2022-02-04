@@ -9,7 +9,7 @@ import org.springframework.data.elasticsearch.annotations.Field;
  */
 @Document(indexName = "stu",type = "_doc")
 public class Stu {
-    @Id
+    @Id //设置es文档主键为当前属性id，如果没有，es会随机生成id
     private Long StuId;
     @Field
     private String name;

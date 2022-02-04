@@ -234,11 +234,13 @@ public class ArticleServiceImpl extends BaseService implements ArticleService {
 
         Article pending = new Article();
         pending.setIsDelete(YesOrNo.YES.type);
-
+        //在mysql中进行文章假删除操作
         int result = articleMapper.updateByExampleSelective(pending, articleExample);
         if (result != 1) {
             GraceException.display(ResponseStatusEnum.ARTICLE_DELETE_ERROR);
         }
+        //在es中进行delete操作
+        elasticsearchTemplate.delete(ArticleEO.class,articleId);
     }
     @Transactional
     @Override
@@ -250,6 +252,8 @@ public class ArticleServiceImpl extends BaseService implements ArticleService {
         if (result != 1) {
             GraceException.display(ResponseStatusEnum.ARTICLE_WITHDRAW_ERROR);
         }
+        //在es中进行delete操作
+        elasticsearchTemplate.delete(ArticleEO.class,articleId);
     }
 
     private Example makeExampleCriteria(String userId, String articleId) {
