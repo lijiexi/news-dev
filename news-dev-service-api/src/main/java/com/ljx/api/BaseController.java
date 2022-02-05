@@ -84,6 +84,8 @@ public class BaseController {
             cookie.setDomain(DOMAIN_NAME);
             cookie.setPath("/");
             response.addCookie(cookie);
+
+
     }
     //删除cookie信息
     public void deleteCookie(HttpServletRequest request,

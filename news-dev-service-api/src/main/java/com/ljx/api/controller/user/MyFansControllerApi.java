@@ -12,6 +12,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Api(value = "粉丝管理", tags = {"粉丝管理"})
 @RequestMapping("fans")
 public interface MyFansControllerApi {
+//    @ApiOperation(value = "被动更新作家粉丝信息", notes = "被动更新作家粉丝信息", httpMethod = "POST")
+//    @PostMapping("/forceUpdateFanInfo")
+//    public GraceJSONResult forceUpdateFanInfo(@RequestParam String writerId,
+//                                                @RequestParam String fanId);
+
     @ApiOperation(value = "查询当前用户是否关注作家", notes = "查询当前用户是否关注作家", httpMethod = "POST")
     @PostMapping("/isMeFollowThisWriter")
     public GraceJSONResult isMeFollowThisWriter(@RequestParam String writerId,

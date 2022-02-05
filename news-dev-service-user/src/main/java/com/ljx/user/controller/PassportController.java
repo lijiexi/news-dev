@@ -53,7 +53,7 @@ public class PassportController extends BaseController implements PassportContro
         redis.set(MOBILE_SMSCODE + ":" + mobile, random, 30 * 60);
         logger.info("验证码： "+random);
 
-        return GraceJSONResult.ok();
+        return GraceJSONResult.ok(random);
     }
 
     @Override

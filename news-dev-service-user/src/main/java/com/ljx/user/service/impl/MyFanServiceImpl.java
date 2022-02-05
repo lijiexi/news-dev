@@ -9,15 +9,22 @@ import com.ljx.grace.result.ResponseStatusEnum;
 import com.ljx.pojo.AppUser;
 import com.ljx.pojo.Fans;
 import com.ljx.pojo.bo.UpdateUserInfoBO;
+import com.ljx.pojo.eo.FansEO;
 import com.ljx.pojo.vo.RegionRatioVO;
 import com.ljx.user.mapper.AppUserMapper;
 import com.ljx.user.mapper.FansMapper;
 import com.ljx.user.service.MyFansService;
 import com.ljx.user.service.UserService;
 import com.ljx.utils.*;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
+import org.springframework.data.elasticsearch.core.query.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
@@ -34,6 +41,8 @@ public class MyFanServiceImpl extends BaseService implements MyFansService {
     private UserService userService;
     @Autowired
     private Sid sid;
+    @Autowired
+    private ElasticsearchTemplate elasticsearchTemplate;
     @Override
     public boolean isMeFollowThisWriter(String writerId, String fanId) {
         Fans fan = new Fans();
@@ -61,13 +70,19 @@ public class MyFanServiceImpl extends BaseService implements MyFansService {
         fan.setSex(fanInfo.getSex());
         fan.setProvince(fanInfo.getProvince());
 
-        //保存到fan表
+        //保存到mysql中的fan表
         fansMapper.insert(fan);
         //将粉丝数量、关注数量在redis中进行累加
         //Redis作家粉丝数累加
         redis.increment(REDIS_WRITER_FANS_COUNTS+":"+writerId,1);
         //Redis自己关注人数累加
         redis.increment(REDIS_MY_FOLLOW_COUNTS+":"+fanId,1);
+
+        //保存粉丝关系到ES中
+        FansEO fansEO = new FansEO();
+        BeanUtils.copyProperties(fan,fansEO);
+        IndexQuery iq = new IndexQueryBuilder().withObject(fansEO).build();
+        elasticsearchTemplate.index(iq);
     }
 
     @Override
@@ -81,6 +96,12 @@ public class MyFanServiceImpl extends BaseService implements MyFansService {
         redis.decrement(REDIS_WRITER_FANS_COUNTS+":"+writerId,1);
         //Redis自己关注人数减少
         redis.decrement(REDIS_MY_FOLLOW_COUNTS+":"+fanId,1);
+
+        //在ES中取关作家,删除粉丝关系,根据writerid和fanID删除
+        DeleteQuery dq = new DeleteQuery();
+        dq.setQuery(QueryBuilders.termQuery("writerId",writerId));
+        dq.setQuery(QueryBuilders.termQuery("fanId",fanId));
+        elasticsearchTemplate.delete(dq,FansEO.class);
     }
 
     @Override
@@ -92,6 +113,26 @@ public class MyFanServiceImpl extends BaseService implements MyFansService {
         PageHelper.startPage(page,pageSize);
         List<Fans> list = fansMapper.select(fan);
         return setterPagedGrid(list,page);
+    }
+
+    @Override
+    public PagedGridResult queryMyFansESList(String writerId,
+                                             Integer page,
+                                             Integer pageSize) {
+        page--;
+        Pageable pageable = PageRequest.of(page,pageSize);
+        //使用term，writerId查询
+        SearchQuery query = new NativeSearchQueryBuilder()
+                .withQuery(QueryBuilders.termQuery("writerId",writerId))
+                .withPageable(pageable)
+                .build();
+        AggregatedPage<FansEO> pagedFans = elasticsearchTemplate.queryForPage(query,FansEO.class);
+        PagedGridResult grid = new PagedGridResult();
+        grid.setRows(pagedFans.getContent());
+        grid.setPage(page + 1);
+        grid.setTotal(pagedFans.getTotalPages());
+        grid.setRecords(pagedFans.getTotalElements());
+        return grid;
     }
 
     @Override

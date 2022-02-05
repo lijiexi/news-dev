@@ -53,8 +53,10 @@ public class MyFansController extends BaseController implements MyFansController
         if (pageSize == null) {
             pageSize = COMMON_PAGESIZE;
         }
-
-        return GraceJSONResult.ok(myFansService.queryMyFansList(writerId,page,pageSize));
+        //通过mysql查询用户的粉丝
+       // return GraceJSONResult.ok(myFansService.queryMyFansList(writerId,page,pageSize));
+        //通过ES查询用户的粉丝
+        return GraceJSONResult.ok(myFansService.queryMyFansESList(writerId,page,pageSize));
     }
 
     @Override

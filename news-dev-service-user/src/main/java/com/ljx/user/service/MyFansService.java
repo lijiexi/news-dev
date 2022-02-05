@@ -27,6 +27,13 @@ public interface MyFansService {
     public PagedGridResult queryMyFansList(String writerId,
                                            Integer page,
                                            Integer pageSize);
+
+    /**
+     * 从es中查询用户所有粉丝
+     */
+    public PagedGridResult queryMyFansESList(String writerId,
+                                           Integer page,
+                                           Integer pageSize);
     /**
      * 查询粉丝数
      */
