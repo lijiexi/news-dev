@@ -26,6 +26,12 @@ public class MyFansController extends BaseController implements MyFansController
     private MyFansService myFansService;
 
     @Override
+    public GraceJSONResult forceUpdateFanInfo(String relationId, String fanId) {
+        myFansService.forceUpdateFanInfo(relationId,fanId);
+        return GraceJSONResult.ok();
+    }
+
+    @Override
     public GraceJSONResult isMeFollowThisWriter(String writerId, String fanId) {
         boolean res = myFansService.isMeFollowThisWriter(writerId,fanId);
         return GraceJSONResult.ok(res);

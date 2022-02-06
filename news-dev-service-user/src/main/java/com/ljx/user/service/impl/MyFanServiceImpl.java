@@ -16,6 +16,7 @@ import com.ljx.user.mapper.FansMapper;
 import com.ljx.user.service.MyFansService;
 import com.ljx.user.service.UserService;
 import com.ljx.utils.*;
+import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.BeanUtils;
@@ -29,9 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class MyFanServiceImpl extends BaseService implements MyFansService {
@@ -168,5 +167,36 @@ public class MyFanServiceImpl extends BaseService implements MyFansService {
         }
 
         return list;
+    }
+
+    @Override
+    public void forceUpdateFanInfo(String relationId, String fanId) {
+        //1.根据fanid查询当前用户最新信息,从appuser表里获取最新用户信息
+        AppUser user = userService.getUser(fanId);
+        //2.更新用户信息到mysql和es中
+        //保存到数据库中
+        Fans fans = new Fans();
+        fans.setId(relationId);
+        //冗余信息
+        fans.setFace(user.getFace());
+        fans.setFanNickname(user.getNickname());
+        fans.setSex(user.getSex());
+        fans.setProvince(user.getProvince());
+        fansMapper.updateByPrimaryKeySelective(fans);
+        //更新fans信息到ES中
+        Map<String,Object> updateMap = new HashMap<>();
+        //设置更新内容
+        updateMap.put("face",user.getFace());
+        updateMap.put("fanNickname",user.getNickname());
+        updateMap.put("sex",user.getSex());
+        updateMap.put("province",user.getProvince());
+        IndexRequest ir = new IndexRequest();
+        ir.source(updateMap);
+        UpdateQuery uq = new UpdateQueryBuilder()
+                .withClass(FansEO.class)
+                .withId(relationId)
+                .withIndexRequest(ir)
+                        .build();
+        elasticsearchTemplate.update(uq);
     }
 }

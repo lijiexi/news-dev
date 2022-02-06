@@ -43,4 +43,8 @@ public interface MyFansService {
      * 根据地域查询粉丝
      */
     public List<RegionRatioVO> queryRegionRatioCounts(String writerId);
+    /**
+     * 基于ES的粉丝信息被动更新
+     */
+    public void forceUpdateFanInfo(String relationId, String fanId);
 }
