@@ -28,7 +28,7 @@
 
 #### 内容管理
 
-![image-20220208204034517](/Users/lijiexi/Library/Application Support/typora-user-images/image-20220208204034517.png)
+![](https://raw.githubusercontent.com/lijiexi/Picbed_PicGo/main/blogImg/image-20220208204034517.png)
 
 ##### 搜索文章
 
@@ -36,7 +36,7 @@
 
 #### 发布文章
 
-![image-20220208204229795](/Users/lijiexi/Library/Application Support/typora-user-images/image-20220208204229795.png)
+![](https://raw.githubusercontent.com/lijiexi/Picbed_PicGo/main/blogImg/image-20220208204229795.png)
 
 #### 账号设置
 
@@ -44,7 +44,7 @@
 
 #### 粉丝管理
 
-![image-20220208204620712](/Users/lijiexi/Library/Application Support/typora-user-images/image-20220208204620712.png)
+![](https://raw.githubusercontent.com/lijiexi/Picbed_PicGo/main/blogImg/image-20220208204620712.png)
 
 #### 粉丝画像
 
