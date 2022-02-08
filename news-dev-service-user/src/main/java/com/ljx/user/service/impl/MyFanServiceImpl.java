@@ -10,6 +10,7 @@ import com.ljx.pojo.AppUser;
 import com.ljx.pojo.Fans;
 import com.ljx.pojo.bo.UpdateUserInfoBO;
 import com.ljx.pojo.eo.FansEO;
+import com.ljx.pojo.vo.FansCountsVO;
 import com.ljx.pojo.vo.RegionRatioVO;
 import com.ljx.user.mapper.AppUserMapper;
 import com.ljx.user.mapper.FansMapper;
@@ -17,13 +18,20 @@ import com.ljx.user.service.MyFansService;
 import com.ljx.user.service.UserService;
 import com.ljx.utils.*;
 import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.Aggregations;
+import org.elasticsearch.search.aggregations.bucket.terms.LongTerms;
+import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
+import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.ResultsExtractor;
 import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
 import org.springframework.data.elasticsearch.core.query.*;
 import org.springframework.stereotype.Service;
@@ -147,6 +155,85 @@ public class MyFanServiceImpl extends BaseService implements MyFansService {
             "河南", "湖北", "湖南", "广东", "海南", "四川", "贵州", "云南", "陕西", "甘肃", "青海", "台湾",
             "内蒙古", "广西", "西藏", "宁夏", "新疆",
             "香港", "澳门"};
+
+    @Override
+    public FansCountsVO queryFansESCounts(String writerId) {
+        TermsAggregationBuilder aggregationBuilder = AggregationBuilders
+                .terms("sex_counts")
+                .field("sex");
+        SearchQuery query = new NativeSearchQueryBuilder()
+                .withQuery(QueryBuilders.matchQuery("writerId",writerId))
+                .addAggregation(aggregationBuilder) //添加聚合查询
+                .build();
+
+        Aggregations aggs = elasticsearchTemplate.query(query, new ResultsExtractor<Aggregations>() {
+            @Override
+            public Aggregations extract(SearchResponse searchResponse) {
+                return searchResponse.getAggregations();
+            }
+        });
+        //获得相应内容
+        Map aggMap = aggs.asMap();
+        LongTerms longTerms = (LongTerms)aggMap.get("sex_counts");
+        List buckList = longTerms.getBuckets();
+        FansCountsVO fansCountsVO = new FansCountsVO();
+        for (int i = 0;i < buckList.size();i++) {
+            LongTerms.Bucket bucket = (LongTerms.Bucket)buckList.get(i);
+            Long docCount = bucket.getDocCount();
+            Long key = (Long)bucket.getKey();
+            if (key.intValue() == Sex.woman.type) {
+                fansCountsVO.setWomanCounts(docCount.intValue());
+            }else if (key.intValue() == Sex.man.type) {
+                fansCountsVO.setManCounts(docCount.intValue());
+            }
+
+        }
+        //如果粉丝为0则，则手动设为0
+        if (buckList == null || buckList.size() == 0) {
+            fansCountsVO.setWomanCounts(0);
+            fansCountsVO.setManCounts(0);
+        }
+        return fansCountsVO;
+    }
+
+    @Override
+    public List<RegionRatioVO> queryRegionRatioESCounts(String writerId) {
+        TermsAggregationBuilder aggregationBuilder = AggregationBuilders
+                .terms("region_counts")
+                .field("province");
+        SearchQuery query = new NativeSearchQueryBuilder()
+                .withQuery(QueryBuilders.matchQuery("writerId",writerId))
+                .addAggregation(aggregationBuilder) //添加聚合查询
+                .build();
+
+        Aggregations aggs = elasticsearchTemplate.query(query, new ResultsExtractor<Aggregations>() {
+            @Override
+            public Aggregations extract(SearchResponse searchResponse) {
+                return searchResponse.getAggregations();
+            }
+        });
+
+        //获得相应内容
+        Map aggMap = aggs.asMap();
+        StringTerms stringTerms = (StringTerms) aggMap.get("region_counts");
+        List buckList = stringTerms.getBuckets();
+        List<RegionRatioVO> list = new ArrayList<>();
+        for (int i = 0;i < buckList.size();i++) {
+            StringTerms.Bucket bucket = (StringTerms.Bucket)buckList.get(i);
+            Long docCount = bucket.getDocCount();
+            String key = (String)bucket.getKey();
+
+//            System.out.println(key);
+//            System.out.println(docCount);
+            RegionRatioVO regionRatioVO = new RegionRatioVO();
+            regionRatioVO.setName(key);
+            regionRatioVO.setValue(docCount.intValue());
+            list.add(regionRatioVO);
+
+        }
+
+        return list;
+    }
 
     @Override
     public List<RegionRatioVO> queryRegionRatioCounts(String writerId) {

@@ -67,17 +67,21 @@ public class MyFansController extends BaseController implements MyFansController
 
     @Override
     public GraceJSONResult queryRatio(String writerId) {
-        int man = myFansService.queryFansCounts(writerId, Sex.man);
-        int women = myFansService.queryFansCounts(writerId,Sex.woman);
-        FansCountsVO fansCountsVO = new FansCountsVO();
-        fansCountsVO.setManCounts(man);
-        fansCountsVO.setWomanCounts(women);
+        //从mysql中查询男女粉丝数量
+//        int man = myFansService.queryFansCounts(writerId, Sex.man);
+//        int women = myFansService.queryFansCounts(writerId,Sex.woman);
+        //从ES中查询男女粉丝数量
+        FansCountsVO fansCountsVO = myFansService.queryFansESCounts(writerId);
+
         return GraceJSONResult.ok(fansCountsVO);
     }
 
     @Override
     public GraceJSONResult queryRatioByRegion(String writerId) {
-        List<RegionRatioVO> list = myFansService.queryRegionRatioCounts(writerId);
+        //使用mysql查询粉丝地域分布
+        //List<RegionRatioVO> list = myFansService.queryRegionRatioCounts(writerId);
+        //使用es查询粉丝地域分布
+        List<RegionRatioVO> list = myFansService.queryRegionRatioESCounts(writerId);
         return GraceJSONResult.ok(list);
     }
 }

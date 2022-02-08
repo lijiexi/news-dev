@@ -1,6 +1,7 @@
 package com.ljx.user.service;
 
 import com.ljx.enums.Sex;
+import com.ljx.pojo.vo.FansCountsVO;
 import com.ljx.pojo.vo.RegionRatioVO;
 import com.ljx.utils.PagedGridResult;
 
@@ -38,11 +39,19 @@ public interface MyFansService {
      * 查询粉丝数
      */
     public Integer queryFansCounts(String writerId, Sex sex);
+    /**
+     * 从ES中查询粉丝数
+     */
+    public FansCountsVO queryFansESCounts(String writerId);
 
     /**
      * 根据地域查询粉丝
      */
     public List<RegionRatioVO> queryRegionRatioCounts(String writerId);
+    /**
+     * 从ES中国根据地域查询粉丝
+     */
+    public List<RegionRatioVO> queryRegionRatioESCounts(String writerId);
     /**
      * 基于ES的粉丝信息被动更新
      */
