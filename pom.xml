@@ -15,6 +15,7 @@
         <module>news-dev-service-admin</module>
         <module>newes-dev-service-article</module>
         <module>news-dev-service-search</module>
+        <module>news-dev-service-files</module>
     </modules>
 
     <packaging>pom</packaging>

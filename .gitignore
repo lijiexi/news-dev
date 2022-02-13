@@ -19,5 +19,6 @@ gen
 /mybatis-generator-database/
 /news-dev-service-admin/target/
 /news-dev-service-search/target/
+/news-dev-service-files/target/
 /target/
 *.yml

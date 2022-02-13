@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @RestController
 public class PassportController extends BaseController implements PassportControllerApi {
@@ -36,8 +38,25 @@ public class PassportController extends BaseController implements PassportContro
     @Autowired
     private UserService userService;
 
+    /**
+     * 验证手机号是否有效
+     */
+    public static boolean isMobile(final String str) {
+        Pattern p = null;
+        Matcher m = null;
+        boolean b = false;
+        p = Pattern.compile("^[1][3,4,5,7,8][0-9]{9}$"); // 验证手机号
+        m = p.matcher(str);
+        b = m.matches();
+        return b;
+    }
     @Override
     public GraceJSONResult getSMSCode(String mobile, HttpServletRequest request) {
+        //判断手机号是否有效
+        boolean flag = isMobile(mobile);
+        if(!flag) {
+            return GraceJSONResult.errorCustom(ResponseStatusEnum.PHONE_NUM_ERROR);
+        }
 
         // 获得用户ip
         String userIp = IPUtil.getRequestIp(request);
