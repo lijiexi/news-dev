@@ -51,14 +51,17 @@ public class InterceptorConfig implements WebMvcConfigurer {
                 .addPathPatterns("/user/getAccountInfo")
                 .addPathPatterns("/user/updateUserInfo")
                 .addPathPatterns("/fans/follow")
-                .addPathPatterns("/fans/unfollow");
+                .addPathPatterns("/fans/unfollow")
+                .addPathPatterns("/fs/uploadFace")
+                .addPathPatterns("/fs/uploadSomeFiles");
 
         /**
          * 注册激活验证拦截器
          */
         registry.addInterceptor(userActiveInterceptor())
                 .addPathPatterns("/fans/follow")
-                .addPathPatterns("/fans/unfollow");
+                .addPathPatterns("/fans/unfollow")
+                .addPathPatterns("/fs/uploadSomeFiles");
         /**
          * 管理员状态验证拦截器
          */

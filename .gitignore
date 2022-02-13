@@ -22,3 +22,4 @@ gen
 /news-dev-service-files/target/
 /target/
 *.yml
+*.properties
