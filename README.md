@@ -90,6 +90,7 @@ news
 ├── news-dev-service-admin -- 管理员模块
 ├── news-dev-service-article -- 文章模块
 ├── news-dev-service-search -- 搜索服务
+├── news-dev-service-files -- 文件上传服务
 ```
 
 ## 技术选型

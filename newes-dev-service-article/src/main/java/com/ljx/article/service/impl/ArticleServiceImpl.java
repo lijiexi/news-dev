@@ -44,10 +44,10 @@ public class ArticleServiceImpl extends BaseService implements ArticleService {
     private Sid sid;
     @Autowired
     private ArticleMapperCustom articleMapperCustom;
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
-    @Autowired
-    private ElasticsearchTemplate elasticsearchTemplate;
+    //@Autowired
+    //private RabbitTemplate rabbitTemplate;
+    //@Autowired
+    //private ElasticsearchTemplate elasticsearchTemplate;
 
     @Transactional
     @Override
@@ -80,34 +80,34 @@ public class ArticleServiceImpl extends BaseService implements ArticleService {
             GraceException.display(ResponseStatusEnum.ARTICLE_CREATE_ERROR);
         }
         //发送延迟消息到rabbitmq，计算定时发布时间和当前时间的时间差，则为往后延时的时间ms
-        if (article.getIsAppoint() == ArticleAppointType.TIMING.type) {
-            //定时发布时间-当前时间=延迟时间
-            Date futureDate = newArticleBO.getPublishTime();
-            Date nowDate = new Date();
-            int delayTimes = (int)(futureDate.getTime() - nowDate.getTime());
-            //System.out.println(delayTimes);
-
-            MessagePostProcessor messagePostProcessor = new MessagePostProcessor() {
-                @Override
-                public Message postProcessMessage(Message message) throws AmqpException {
-                    // 设置消息的持久
-                    message.getMessageProperties()
-                            .setDeliveryMode(MessageDeliveryMode.PERSISTENT);
-                    // 设置消息延迟的时间，单位ms毫秒
-                    message.getMessageProperties()
-                            .setDelay(delayTimes);
-                    return message;
-                }
-            };
-            //传入当前文章id，作为消息
-            rabbitTemplate.convertAndSend(
-                    RabbitMQDelayConfig.EXCHANGE_DELAY,
-                    "publish.delay.do",
-                    articleId,
-                    messagePostProcessor);
-
-            System.out.println("延迟消息，定时发布文章：" + new Date());
-        }
+//        if (article.getIsAppoint() == ArticleAppointType.TIMING.type) {
+//            //定时发布时间-当前时间=延迟时间
+//            Date futureDate = newArticleBO.getPublishTime();
+//            Date nowDate = new Date();
+//            int delayTimes = (int)(futureDate.getTime() - nowDate.getTime());
+//            //System.out.println(delayTimes);
+//
+//            MessagePostProcessor messagePostProcessor = new MessagePostProcessor() {
+//                @Override
+//                public Message postProcessMessage(Message message) throws AmqpException {
+//                    // 设置消息的持久
+//                    message.getMessageProperties()
+//                            .setDeliveryMode(MessageDeliveryMode.PERSISTENT);
+//                    // 设置消息延迟的时间，单位ms毫秒
+//                    message.getMessageProperties()
+//                            .setDelay(delayTimes);
+//                    return message;
+//                }
+//            };
+//            //传入当前文章id，作为消息
+//            rabbitTemplate.convertAndSend(
+//                    RabbitMQDelayConfig.EXCHANGE_DELAY,
+//                    "publish.delay.do",
+//                    articleId,
+//                    messagePostProcessor);
+//
+//            System.out.println("延迟消息，定时发布文章：" + new Date());
+//        }
 
         //TODO使用AI检测文章内容
         //默认AI通过，直接进行人工审核
@@ -131,19 +131,19 @@ public class ArticleServiceImpl extends BaseService implements ArticleService {
             GraceException.display(ResponseStatusEnum.ARTICLE_REVIEW_ERROR);
         }
         //如果审核通过，则查询artilce表，将相应字段信息存入es中
-        if (pendingStatus == ArticleReviewStatus.SUCCESS.type) {
-            Article result = articleMapper.selectByPrimaryKey(articleId);
-            //对立即发布文章，审核完毕立即存入es
-            if (result.getIsAppoint() == ArticleAppointType.IMMEDIATELY.type) {
-                ArticleEO articleEO = new ArticleEO();
-                //将article对象属性拷贝到eo中
-                BeanUtils.copyProperties(result,articleEO);
-                IndexQuery iq = new IndexQueryBuilder().withObject(articleEO).build();
-                //创建document
-                elasticsearchTemplate.index(iq);
-            }
-
-        }
+//        if (pendingStatus == ArticleReviewStatus.SUCCESS.type) {
+//            Article result = articleMapper.selectByPrimaryKey(articleId);
+//            //对立即发布文章，审核完毕立即存入es
+//            if (result.getIsAppoint() == ArticleAppointType.IMMEDIATELY.type) {
+//                ArticleEO articleEO = new ArticleEO();
+//                //将article对象属性拷贝到eo中
+//                BeanUtils.copyProperties(result,articleEO);
+//                IndexQuery iq = new IndexQueryBuilder().withObject(articleEO).build();
+//                //创建document
+//                elasticsearchTemplate.index(iq);
+//            }
+//
+//        }
 
     }
 
@@ -240,7 +240,7 @@ public class ArticleServiceImpl extends BaseService implements ArticleService {
             GraceException.display(ResponseStatusEnum.ARTICLE_DELETE_ERROR);
         }
         //在es中进行delete操作
-        elasticsearchTemplate.delete(ArticleEO.class,articleId);
+        //elasticsearchTemplate.delete(ArticleEO.class,articleId);
     }
     @Transactional
     @Override
@@ -253,7 +253,7 @@ public class ArticleServiceImpl extends BaseService implements ArticleService {
             GraceException.display(ResponseStatusEnum.ARTICLE_WITHDRAW_ERROR);
         }
         //在es中进行delete操作
-        elasticsearchTemplate.delete(ArticleEO.class,articleId);
+        //elasticsearchTemplate.delete(ArticleEO.class,articleId);
     }
 
     private Example makeExampleCriteria(String userId, String articleId) {

@@ -18,7 +18,7 @@ public interface ArticlePortalControllerApi {
 
 
     @ApiOperation(value = "首页通过mysql查询文章列表", notes = "首页通过mysql查询文章列表", httpMethod = "GET")
-    @GetMapping("mysqlList")
+    @GetMapping("list")
     public GraceJSONResult mysqlList(@RequestParam String keyword,
                                 @RequestParam Integer category,
                                 @ApiParam(name = "page",value = "查询下一页的第几页",required = false)
@@ -27,7 +27,7 @@ public interface ArticlePortalControllerApi {
                                     @RequestParam Integer pageSize);
 
     @ApiOperation(value = "首页通过ES查询文章列表", notes = "首页通过ES查询文章列表", httpMethod = "GET")
-    @GetMapping("list")
+    @GetMapping("eslist")
     public GraceJSONResult eslist(@RequestParam String keyword,
                                 @RequestParam Integer category,
                                 @ApiParam(name = "page",value = "查询下一页的第几页",required = false)

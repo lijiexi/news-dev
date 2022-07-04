@@ -22,4 +22,5 @@ public interface FileUploaderControllerApi {
     public GraceJSONResult uploadSomeFiles(@RequestParam String userId,
                                       MultipartFile[] files) throws Exception;
 
+
 }

@@ -48,8 +48,8 @@ public class MyFanServiceImpl extends BaseService implements MyFansService {
     private UserService userService;
     @Autowired
     private Sid sid;
-    @Autowired
-    private ElasticsearchTemplate elasticsearchTemplate;
+    //@Autowired
+    //private ElasticsearchTemplate elasticsearchTemplate;
     @Override
     public boolean isMeFollowThisWriter(String writerId, String fanId) {
         Fans fan = new Fans();
@@ -86,10 +86,10 @@ public class MyFanServiceImpl extends BaseService implements MyFansService {
         redis.increment(REDIS_MY_FOLLOW_COUNTS+":"+fanId,1);
 
         //保存粉丝关系到ES中
-        FansEO fansEO = new FansEO();
-        BeanUtils.copyProperties(fan,fansEO);
-        IndexQuery iq = new IndexQueryBuilder().withObject(fansEO).build();
-        elasticsearchTemplate.index(iq);
+//        FansEO fansEO = new FansEO();
+//        BeanUtils.copyProperties(fan,fansEO);
+//        IndexQuery iq = new IndexQueryBuilder().withObject(fansEO).build();
+//        elasticsearchTemplate.index(iq);
     }
 
     @Override
@@ -105,10 +105,10 @@ public class MyFanServiceImpl extends BaseService implements MyFansService {
         redis.decrement(REDIS_MY_FOLLOW_COUNTS+":"+fanId,1);
 
         //在ES中取关作家,删除粉丝关系,根据writerid和fanID删除
-        DeleteQuery dq = new DeleteQuery();
-        dq.setQuery(QueryBuilders.termQuery("writerId",writerId));
-        dq.setQuery(QueryBuilders.termQuery("fanId",fanId));
-        elasticsearchTemplate.delete(dq,FansEO.class);
+//        DeleteQuery dq = new DeleteQuery();
+//        dq.setQuery(QueryBuilders.termQuery("writerId",writerId));
+//        dq.setQuery(QueryBuilders.termQuery("fanId",fanId));
+//        elasticsearchTemplate.delete(dq,FansEO.class);
     }
 
     @Override
@@ -126,20 +126,21 @@ public class MyFanServiceImpl extends BaseService implements MyFansService {
     public PagedGridResult queryMyFansESList(String writerId,
                                              Integer page,
                                              Integer pageSize) {
-        page--;
-        Pageable pageable = PageRequest.of(page,pageSize);
-        //使用term，writerId查询
-        SearchQuery query = new NativeSearchQueryBuilder()
-                .withQuery(QueryBuilders.termQuery("writerId",writerId))
-                .withPageable(pageable)
-                .build();
-        AggregatedPage<FansEO> pagedFans = elasticsearchTemplate.queryForPage(query,FansEO.class);
-        PagedGridResult grid = new PagedGridResult();
-        grid.setRows(pagedFans.getContent());
-        grid.setPage(page + 1);
-        grid.setTotal(pagedFans.getTotalPages());
-        grid.setRecords(pagedFans.getTotalElements());
-        return grid;
+//        page--;
+//        Pageable pageable = PageRequest.of(page,pageSize);
+//        //使用term，writerId查询
+//        SearchQuery query = new NativeSearchQueryBuilder()
+//                .withQuery(QueryBuilders.termQuery("writerId",writerId))
+//                .withPageable(pageable)
+//                .build();
+//        AggregatedPage<FansEO> pagedFans = elasticsearchTemplate.queryForPage(query,FansEO.class);
+//        PagedGridResult grid = new PagedGridResult();
+//        grid.setRows(pagedFans.getContent());
+//        grid.setPage(page + 1);
+//        grid.setTotal(pagedFans.getTotalPages());
+//        grid.setRecords(pagedFans.getTotalElements());
+//        return grid;
+        return null;
     }
 
     @Override
@@ -158,81 +159,82 @@ public class MyFanServiceImpl extends BaseService implements MyFansService {
 
     @Override
     public FansCountsVO queryFansESCounts(String writerId) {
-        TermsAggregationBuilder aggregationBuilder = AggregationBuilders
-                .terms("sex_counts")
-                .field("sex");
-        SearchQuery query = new NativeSearchQueryBuilder()
-                .withQuery(QueryBuilders.matchQuery("writerId",writerId))
-                .addAggregation(aggregationBuilder) //添加聚合查询
-                .build();
-
-        Aggregations aggs = elasticsearchTemplate.query(query, new ResultsExtractor<Aggregations>() {
-            @Override
-            public Aggregations extract(SearchResponse searchResponse) {
-                return searchResponse.getAggregations();
-            }
-        });
-        //获得相应内容
-        Map aggMap = aggs.asMap();
-        LongTerms longTerms = (LongTerms)aggMap.get("sex_counts");
-        List buckList = longTerms.getBuckets();
-        FansCountsVO fansCountsVO = new FansCountsVO();
-        for (int i = 0;i < buckList.size();i++) {
-            LongTerms.Bucket bucket = (LongTerms.Bucket)buckList.get(i);
-            Long docCount = bucket.getDocCount();
-            Long key = (Long)bucket.getKey();
-            if (key.intValue() == Sex.woman.type) {
-                fansCountsVO.setWomanCounts(docCount.intValue());
-            }else if (key.intValue() == Sex.man.type) {
-                fansCountsVO.setManCounts(docCount.intValue());
-            }
-
-        }
-        //如果粉丝为0则，则手动设为0
-        if (buckList == null || buckList.size() == 0) {
-            fansCountsVO.setWomanCounts(0);
-            fansCountsVO.setManCounts(0);
-        }
-        return fansCountsVO;
+//        TermsAggregationBuilder aggregationBuilder = AggregationBuilders
+//                .terms("sex_counts")
+//                .field("sex");
+//        SearchQuery query = new NativeSearchQueryBuilder()
+//                .withQuery(QueryBuilders.matchQuery("writerId",writerId))
+//                .addAggregation(aggregationBuilder) //添加聚合查询
+//                .build();
+//        Aggregations aggs = elasticsearchTemplate.query(query, new ResultsExtractor<Aggregations>() {
+//            @Override
+//            public Aggregations extract(SearchResponse searchResponse) {
+//                return searchResponse.getAggregations();
+//            }
+//        });
+//        //获得相应内容
+//        Map aggMap = aggs.asMap();
+//        LongTerms longTerms = (LongTerms)aggMap.get("sex_counts");
+//        List buckList = longTerms.getBuckets();
+//        FansCountsVO fansCountsVO = new FansCountsVO();
+//        for (int i = 0;i < buckList.size();i++) {
+//            LongTerms.Bucket bucket = (LongTerms.Bucket)buckList.get(i);
+//            Long docCount = bucket.getDocCount();
+//            Long key = (Long)bucket.getKey();
+//            if (key.intValue() == Sex.woman.type) {
+//                fansCountsVO.setWomanCounts(docCount.intValue());
+//            }else if (key.intValue() == Sex.man.type) {
+//                fansCountsVO.setManCounts(docCount.intValue());
+//            }
+//
+//        }
+//        //如果粉丝为0则，则手动设为0
+//        if (buckList == null || buckList.size() == 0) {
+//            fansCountsVO.setWomanCounts(0);
+//            fansCountsVO.setManCounts(0);
+//        }
+//        return fansCountsVO;
+        return null;
     }
 
     @Override
     public List<RegionRatioVO> queryRegionRatioESCounts(String writerId) {
-        TermsAggregationBuilder aggregationBuilder = AggregationBuilders
-                .terms("region_counts")
-                .field("province");
-        SearchQuery query = new NativeSearchQueryBuilder()
-                .withQuery(QueryBuilders.matchQuery("writerId",writerId))
-                .addAggregation(aggregationBuilder) //添加聚合查询
-                .build();
-
-        Aggregations aggs = elasticsearchTemplate.query(query, new ResultsExtractor<Aggregations>() {
-            @Override
-            public Aggregations extract(SearchResponse searchResponse) {
-                return searchResponse.getAggregations();
-            }
-        });
-
-        //获得相应内容
-        Map aggMap = aggs.asMap();
-        StringTerms stringTerms = (StringTerms) aggMap.get("region_counts");
-        List buckList = stringTerms.getBuckets();
-        List<RegionRatioVO> list = new ArrayList<>();
-        for (int i = 0;i < buckList.size();i++) {
-            StringTerms.Bucket bucket = (StringTerms.Bucket)buckList.get(i);
-            Long docCount = bucket.getDocCount();
-            String key = (String)bucket.getKey();
-
-//            System.out.println(key);
-//            System.out.println(docCount);
-            RegionRatioVO regionRatioVO = new RegionRatioVO();
-            regionRatioVO.setName(key);
-            regionRatioVO.setValue(docCount.intValue());
-            list.add(regionRatioVO);
-
-        }
-
-        return list;
+//        TermsAggregationBuilder aggregationBuilder = AggregationBuilders
+//                .terms("region_counts")
+//                .field("province");
+//        SearchQuery query = new NativeSearchQueryBuilder()
+//                .withQuery(QueryBuilders.matchQuery("writerId",writerId))
+//                .addAggregation(aggregationBuilder) //添加聚合查询
+//                .build();
+//
+//        Aggregations aggs = elasticsearchTemplate.query(query, new ResultsExtractor<Aggregations>() {
+//            @Override
+//            public Aggregations extract(SearchResponse searchResponse) {
+//                return searchResponse.getAggregations();
+//            }
+//        });
+//
+//        //获得相应内容
+//        Map aggMap = aggs.asMap();
+//        StringTerms stringTerms = (StringTerms) aggMap.get("region_counts");
+//        List buckList = stringTerms.getBuckets();
+//        List<RegionRatioVO> list = new ArrayList<>();
+//        for (int i = 0;i < buckList.size();i++) {
+//            StringTerms.Bucket bucket = (StringTerms.Bucket)buckList.get(i);
+//            Long docCount = bucket.getDocCount();
+//            String key = (String)bucket.getKey();
+//
+////            System.out.println(key);
+////            System.out.println(docCount);
+//            RegionRatioVO regionRatioVO = new RegionRatioVO();
+//            regionRatioVO.setName(key);
+//            regionRatioVO.setValue(docCount.intValue());
+//            list.add(regionRatioVO);
+//
+//        }
+//
+//        return list;
+        return null;
     }
 
     @Override
@@ -270,20 +272,20 @@ public class MyFanServiceImpl extends BaseService implements MyFansService {
         fans.setSex(user.getSex());
         fans.setProvince(user.getProvince());
         fansMapper.updateByPrimaryKeySelective(fans);
-        //更新fans信息到ES中
-        Map<String,Object> updateMap = new HashMap<>();
-        //设置更新内容
-        updateMap.put("face",user.getFace());
-        updateMap.put("fanNickname",user.getNickname());
-        updateMap.put("sex",user.getSex());
-        updateMap.put("province",user.getProvince());
-        IndexRequest ir = new IndexRequest();
-        ir.source(updateMap);
-        UpdateQuery uq = new UpdateQueryBuilder()
-                .withClass(FansEO.class)
-                .withId(relationId)
-                .withIndexRequest(ir)
-                        .build();
-        elasticsearchTemplate.update(uq);
+//        //更新fans信息到ES中
+//        Map<String,Object> updateMap = new HashMap<>();
+//        //设置更新内容
+//        updateMap.put("face",user.getFace());
+//        updateMap.put("fanNickname",user.getNickname());
+//        updateMap.put("sex",user.getSex());
+//        updateMap.put("province",user.getProvince());
+//        IndexRequest ir = new IndexRequest();
+//        ir.source(updateMap);
+//        UpdateQuery uq = new UpdateQueryBuilder()
+//                .withClass(FansEO.class)
+//                .withId(relationId)
+//                .withIndexRequest(ir)
+//                        .build();
+//        elasticsearchTemplate.update(uq);
     }
 }

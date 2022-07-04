@@ -27,7 +27,7 @@ public interface MyFansControllerApi {
     public GraceJSONResult follow(@RequestParam String writerId,
                                                 @RequestParam String fanId);
 
-    @ApiOperation(value = "用户取关作家成", notes = "用户取关作家成", httpMethod = "POST")
+    @ApiOperation(value = "用户取关作家", notes = "用户取关作家", httpMethod = "POST")
     @PostMapping("/unfollow")
     public GraceJSONResult unfollow(@RequestParam String writerId,
                                     @RequestParam String fanId);

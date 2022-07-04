@@ -48,6 +48,16 @@ public class UserServiceImpl implements UserService {
         AppUser user = appUserMapper.selectOneByExample(userExample);
         return user;
     }
+    @Override
+    public AppUser queryEmailIsExist(String email) {
+        //AppUser是查询的实例
+        Example userExample = new Example(AppUser.class);
+        //构造查询条件
+        Example.Criteria userCriteria = userExample.createCriteria();
+        userCriteria.andEqualTo("email",email);
+        AppUser user = appUserMapper.selectOneByExample(userExample);
+        return user;
+    }
 
     @Transactional
     @Override
@@ -62,6 +72,25 @@ public class UserServiceImpl implements UserService {
         user.setSex(Sex.secret.type);
         user.setActiveStatus(UserStatus.INACTIVE.type);
         user.setTotalIncome(0);
+        user.setBirthday(DateUtil.stringToDate("1999-02-14"));
+        user.setCreatedTime(new Date());
+        user.setUpdatedTime(new Date());
+        appUserMapper.insert(user);
+        return user;
+    }
+    @Transactional
+    public AppUser createUserByEmail(String email) {
+        String userId = sid.nextShort();
+        AppUser user = new AppUser();
+        //分布式环境中，使用全局id
+        user.setId(userId);
+        user.setMobile(sid.nextShort());
+        user.setNickname("FreshMan001");
+        user.setFace(USER_FACE0);
+        user.setSex(Sex.secret.type);
+        user.setActiveStatus(UserStatus.INACTIVE.type);
+        user.setTotalIncome(0);
+        user.setEmail(email);
         user.setBirthday(DateUtil.stringToDate("1999-02-14"));
         user.setCreatedTime(new Date());
         user.setUpdatedTime(new Date());

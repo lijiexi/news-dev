@@ -59,10 +59,7 @@ public class FileUploaderController implements FileUploaderControllerApi {
         } else {
             return GraceJSONResult.errorCustom(ResponseStatusEnum.FILE_UPLOAD_NULL_ERROR);
         }
-        //打印日志
-        logger.info("path = " + finalPath);
-        //return GraceJSONResult.ok(finalPath);
-        return GraceJSONResult.ok();
+        return GraceJSONResult.ok(finalPath);
     }
 
     @Override
@@ -109,14 +106,12 @@ public class FileUploaderController implements FileUploaderControllerApi {
                 if (StringUtils.isNotBlank(path)) {
                     finalPath = fileResource.getOssHost() + path;
                     imageUrlList.add(finalPath);
-                    logger.info("path = " + finalPath);
                 } else {
                     continue;
                 }
             }
         }
-        //return GraceJSONResult.ok(imageUrlList);
-        return GraceJSONResult.ok();
+        return GraceJSONResult.ok(imageUrlList);
 
     }
 }

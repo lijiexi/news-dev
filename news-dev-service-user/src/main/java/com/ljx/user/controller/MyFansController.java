@@ -60,18 +60,21 @@ public class MyFansController extends BaseController implements MyFansController
             pageSize = COMMON_PAGESIZE;
         }
         //通过mysql查询用户的粉丝
-       // return GraceJSONResult.ok(myFansService.queryMyFansList(writerId,page,pageSize));
+        return GraceJSONResult.ok(myFansService.queryMyFansList(writerId,page,pageSize));
         //通过ES查询用户的粉丝
-        return GraceJSONResult.ok(myFansService.queryMyFansESList(writerId,page,pageSize));
+        //return GraceJSONResult.ok(myFansService.queryMyFansESList(writerId,page,pageSize));
     }
 
     @Override
     public GraceJSONResult queryRatio(String writerId) {
         //从mysql中查询男女粉丝数量
-//        int man = myFansService.queryFansCounts(writerId, Sex.man);
-//        int women = myFansService.queryFansCounts(writerId,Sex.woman);
+        int man = myFansService.queryFansCounts(writerId, Sex.man);
+        int women = myFansService.queryFansCounts(writerId,Sex.woman);
+        FansCountsVO fansCountsVO = new FansCountsVO();
+        fansCountsVO.setManCounts(man);
+        fansCountsVO.setWomanCounts(women);
         //从ES中查询男女粉丝数量
-        FansCountsVO fansCountsVO = myFansService.queryFansESCounts(writerId);
+        //FansCountsVO fansCountsVO = myFansService.queryFansESCounts(writerId);
 
         return GraceJSONResult.ok(fansCountsVO);
     }
@@ -79,9 +82,9 @@ public class MyFansController extends BaseController implements MyFansController
     @Override
     public GraceJSONResult queryRatioByRegion(String writerId) {
         //使用mysql查询粉丝地域分布
-        //List<RegionRatioVO> list = myFansService.queryRegionRatioCounts(writerId);
+        List<RegionRatioVO> list = myFansService.queryRegionRatioCounts(writerId);
         //使用es查询粉丝地域分布
-        List<RegionRatioVO> list = myFansService.queryRegionRatioESCounts(writerId);
+        //List<RegionRatioVO> list = myFansService.queryRegionRatioESCounts(writerId);
         return GraceJSONResult.ok(list);
     }
 }

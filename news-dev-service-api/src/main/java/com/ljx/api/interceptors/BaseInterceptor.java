@@ -13,6 +13,7 @@ public class BaseInterceptor {
     public static final String REDIS_USER_INFO = "redis_user_info";
     public static final String REDIS_ADMIN_TOKEN = "redis_admin_token";
 
+
     public boolean verifyUserIdToken(String id,String token,
                                      String redisKeyPrefix){
         if(StringUtils.isNotBlank(id) && StringUtils.isNotBlank(token)){
@@ -30,6 +31,7 @@ public class BaseInterceptor {
             GraceException.display(ResponseStatusEnum.UN_LOGIN);
             return false;
         }
+        
         return true;
     }
 }

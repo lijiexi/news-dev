@@ -20,6 +20,16 @@ public interface PassportControllerApi {
     @GetMapping("/getSMSCode")
     public GraceJSONResult getSMSCode(@RequestParam String mobile, HttpServletRequest request);
 
+    @ApiOperation(value = "获得邮箱验证码", notes = "获得邮箱验证码", httpMethod = "GET")
+    @GetMapping("/getEmailCode")
+    public GraceJSONResult getEmailCode(@RequestParam String mobile, HttpServletRequest request);
+
+    @ApiOperation(value = "register&login", notes = "register&login", httpMethod = "POST")
+    @PostMapping("/doLoginUK")
+    public GraceJSONResult doLoginUK(@RequestBody @Valid RegisterLoginBO registerLoginBO,
+                                   BindingResult result,
+                                   HttpServletRequest request,
+                                   HttpServletResponse response);
     @ApiOperation(value = "一键注册登录接口", notes = "一键注册登录接口", httpMethod = "POST")
     @PostMapping("/doLogin")
     public GraceJSONResult doLogin(@RequestBody @Valid RegisterLoginBO registerLoginBO,
